@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sword Fighting Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a1a;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .game-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            gap: 20px;
+        }
+        
+        .battle-area {
+            flex: 2;
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .upgrades-area {
+            flex: 1;
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .crafting-area {
+            flex: 1;
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        h1, h2 {
+            color: #ffcc00;
+            text-align: center;
+        }
+        
+        .enemy {
+            margin: 20px auto;
+            width: 200px;
+            height: 200px;
+            background-color: #ff3333;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            position: relative;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+        
+        .health-bar {
+            position: absolute;
+            bottom: -20px;
+            width: 100%;
+            height: 10px;
+            background-color: #444;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .health-fill {
+            height: 100%;
+            background-color: #00cc00;
+            width: 100%;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .attack-btn {
+            background-color: #ff3333;
+        }
+        
+        .attack-btn:hover {
+            background-color: #e60000;
+        }
+        
+        .craft-btn {
+            background-color: #ff9900;
+        }
+        
+        .craft-btn:hover {
+            background-color: #e68a00;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            background-color: #333;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .sword-display {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 5px;
+            min-height: 60px;
+        }
+        
+        .common {
+            color: #ffffff;
+        }
+        
+        .uncommon {
+            color: #00ff00;
+        }
+        
+        .rare {
+            color: #0077ff;
+        }
+        
+        .legendary {
+            color: #aa00ff;
+        }
+        
+        .mythical {
+            color: #ff00aa;
+        }
+        
+        .jake-approved {
+            color: #ffff00;
+            text-shadow: 0 0 5px #ff0;
+            animation: glow 1s infinite alternate;
+        }
+        
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 5px #ff0;
+            }
+            to {
+                text-shadow: 0 0 10px #ff0, 0 0 20px #ff0;
+            }
+        }
+        
+        .upgrade-btn {
+            width: 100%;
+            margin: 5px 0;
+            background-color: #3399ff;
+        }
+        
+        .upgrade-btn:hover {
+            background-color: #0077e6;
+        }
+        
+        .hired-helpers {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 5px;
+        }
+        
+        .helper {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            padding: 5px;
+            background-color: #444;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sword Fighting Game</h1>
+    
+    <div class="stats">
+        <div class="stat">
+            <h3>Money</h3>
+            <p id="money">0</p>
+        </div>
+        <div class="stat">
+            <h3>Enemies Defeated</h3>
+            <p id="enemies-defeated">0</p>
+        </div>
+        <div class="stat">
+            <h3>Damage</h3>
+            <p id="damage-stat">10</p>
+        </div>
+        <div class="stat">
+            <h3>Health</h3>
+            <p id="health-stat">100</p>
+        </div>
+        <div class="stat">
+            <h3>Hired Helpers</h3>
+            <p id="helpers-stat">0</p>
+        </div>
+    </div>
+    
+    <div class="game-container">
+        <div class="battle-area">
+            <h2>Battle</h2>
+            <div class="enemy">
+                <span id="enemy-name">Enemy</span>
+                <div class="health-bar">
+                    <div class="health-fill" id="enemy-health-bar"></div>
+                </div>
+            </div>
+            <button class="attack-btn" id="attack-btn">Attack!</button>
+            <div class="sword-display">
+                <p>Current Sword: <span id="current-sword" class="common">Basic Sword</span></p>
+                <p>Sword Multiplier: <span id="sword-multiplier">1x</span></p>
+            </div>
+        </div>
+        
+        <div class="upgrades-area">
+            <h2>Upgrades</h2>
+            <button class="upgrade-btn" id="hire-btn">Hire Helper (500)</button>
+            <button class="upgrade-btn" id="damage-btn">Increase Damage (1000)</button>
+            <button class="upgrade-btn" id="defense-btn">Increase Health (1000)</button>
+            
+            <div class="hired-helpers">
+                <h3>Your Helpers</h3>
+                <div id="helpers-list"></div>
+            </div>
+        </div>
+        
+        <div class="crafting-area">
+            <h2>Crafting</h2>
+            <p>Craft a random sword for 500 money</p>
+            <button class="craft-btn" id="craft-btn">Craft Sword</button>
+            <div id="craft-result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        const gameState = {
+            money: 0,
+            enemiesDefeated: 0,
+            damage: 10,
+            health: 100,
+            maxHealth: 100,
+            helpers: [],
+            currentSword: {
+                name: "Basic Sword",
+                tier: "common",
+                multiplier: 1
+            },
+            enemy: {
+                name: "Goblin",
+                health: 50,
+                maxHealth: 50,
+                damage: 5
+            },
+            enemyNames: ["Goblin", "Orc", "Troll", "Ogre", "Demon", "Dragon", "Dark Knight", "Warlock", "Shadow Beast", "Ancient Guardian"],
+            swordTiers: [
+                { name: "Common", tier: "common", multiplier: 1, chance: 0.5 },
+                { name: "Uncommon", tier: "uncommon", multiplier: 1.5, chance: 0.3 },
+                { name: "Rare", tier: "rare", multiplier: 2, chance: 0.15 },
+                { name: "Legendary", tier: "legendary", multiplier: 3, chance: 0.04 },
+                { name: "Mythical", tier: "mythical", multiplier: 5, chance: 0.009 },
+                { name: "JAKE APPROVED", tier: "jake-approved", multiplier: 10, chance: 0.001 }
+            ]
+        };
+
+        // DOM elements
+        const moneyDisplay = document.getElementById('money');
+        const enemiesDefeatedDisplay = document.getElementById('enemies-defeated');
+        const damageStatDisplay = document.getElementById('damage-stat');
+        const healthStatDisplay = document.getElementById('health-stat');
+        const helpersStatDisplay = document.getElementById('helpers-stat');
+        const enemyNameDisplay = document.getElementById('enemy-name');
+        const enemyHealthBar = document.getElementById('enemy-health-bar');
+        const currentSwordDisplay = document.getElementById('current-sword');
+        const swordMultiplierDisplay = document.getElementById('sword-multiplier');
+        const attackBtn = document.getElementById('attack-btn');
+        const craftBtn = document.getElementById('craft-btn');
+        const hireBtn = document.getElementById('hire-btn');
+        const damageBtn = document.getElementById('damage-btn');
+        const defenseBtn = document.getElementById('defense-btn');
+        const craftResultDisplay = document.getElementById('craft-result');
+        const helpersList = document.getElementById('helpers-list');
+
+        // Helper functions
+        function updateUI() {
+            moneyDisplay.textContent = gameState.money;
+            enemiesDefeatedDisplay.textContent = gameState.enemiesDefeated;
+            damageStatDisplay.textContent = gameState.damage;
+            healthStatDisplay.textContent = `${gameState.health}/${gameState.maxHealth}`;
+            helpersStatDisplay.textContent = gameState.helpers.length;
+            
+            enemyNameDisplay.textContent = gameState.enemy.name;
+            enemyHealthBar.style.width = `${(gameState.enemy.health / gameState.enemy.maxHealth) * 100}%`;
+            
+            currentSwordDisplay.textContent = gameState.currentSword.name;
+            currentSwordDisplay.className = gameState.currentSword.tier;
+            swordMultiplierDisplay.textContent = `${gameState.currentSword.multiplier}x`;
+            
+            // Update button states
+            craftBtn.disabled = gameState.money < 500;
+            hireBtn.disabled = gameState.money < 500;
+            damageBtn.disabled = gameState.money < 1000;
+            defenseBtn.disabled = gameState.money < 1000;
+            
+            // Update helper list
+            helpersList.innerHTML = '';
+            gameState.helpers.forEach((helper, index) => {
+                const helperElement = document.createElement('div');
+                helperElement.className = 'helper';
+                helperElement.innerHTML = `
+                    <span>Helper ${index + 1}</span>
+                    <span>${helper.damage} damage</span>
+                `;
+                helpersList.appendChild(helperElement);
+            });
+        }
+
+        function spawnNewEnemy() {
+            const enemyLevel = Math.floor(gameState.enemiesDefeated / 5) + 1;
+            const nameIndex = Math.min(Math.floor(Math.random() * gameState.enemyNames.length), gameState.enemyNames.length - 1);
+            
+            gameState.enemy = {
+                name: gameState.enemyNames[nameIndex],
+                health: 50 + (gameState.enemiesDefeated * 10),
+                maxHealth: 50 + (gameState.enemiesDefeated * 10),
+                damage: 5 + (gameState.enemiesDefeated * 2)
+            };
+            
+            updateUI();
+        }
+
+        function attackEnemy() {
+            // Player attack
+            const totalDamage = gameState.damage * gameState.currentSword.multiplier;
+            gameState.enemy.health -= totalDamage;
+            
+            // Check if enemy is defeated
+            if (gameState.enemy.health <= 0) {
+                gameState.enemiesDefeated++;
+                gameState.money += 1000;
+                spawnNewEnemy();
+            } else {
+                // Enemy counterattack
+                gameState.health -= gameState.enemy.damage;
+                
+                // Check if player is defeated
+                if (gameState.health <= 0) {
+                    alert("You were defeated! Resetting health.");
+                    gameState.health = gameState.maxHealth;
+                }
+            }
+            
+            updateUI();
+        }
+
+        function helperAttack() {
+            if (gameState.helpers.length === 0) return;
+            
+            let totalHelperDamage = 0;
+            gameState.helpers.forEach(helper => {
+                totalHelperDamage += helper.damage;
+            });
+            
+            gameState.enemy.health -= totalHelperDamage;
+            
+            if (gameState.enemy.health <= 0) {
+                gameState.enemiesDefeated++;
+                gameState.money += 1000;
+                spawnNewEnemy();
+            }
+            
+            updateUI();
+        }
+
+        function craftSword() {
+            if (gameState.money < 500) return;
+            
+            gameState.money -= 500;
+            
+            // Determine sword tier based on chances
+            const random = Math.random();
+            let cumulativeChance = 0;
+            let selectedTier = gameState.swordTiers[0]; // Default to common
+            
+            for (const tier of gameState.swordTiers) {
+                cumulativeChance += tier.chance;
+                if (random <= cumulativeChance) {
+                    selectedTier = tier;
+                    break;
+                }
+            }
+            
+            gameState.currentSword = {
+                name: `${selectedTier.name} Sword`,
+                tier: selectedTier.tier,
+                multiplier: selectedTier.multiplier
+            };
+            
+            // Show craft result
+            craftResultDisplay.innerHTML = `You crafted a <span class="${selectedTier.tier}">${selectedTier.name} Sword</span>!`;
+            
+            updateUI();
+        }
+
+        function hireHelper() {
+            if (gameState.money < 500) return;
+            
+            gameState.money -= 500;
+            
+            const baseDamage = 5;
+            const damage = baseDamage + Math.floor(gameState.enemiesDefeated / 10);
+            
+            gameState.helpers.push({
+                damage: damage
+            });
+            
+            updateUI();
+        }
+
+        function upgradeDamage() {
+            if (gameState.money < 1000) return;
+            
+            gameState.money -= 1000;
+            gameState.damage += 5;
+            
+            updateUI();
+        }
+
+        function upgradeDefense() {
+            if (gameState.money < 1000) return;
+            
+            gameState.money -= 1000;
+            gameState.maxHealth += 20;
+            gameState.health += 20;
+            
+            updateUI();
+        }
+
+        // Event listeners
+        attackBtn.addEventListener('click', attackEnemy);
+        craftBtn.addEventListener('click', craftSword);
+        hireBtn.addEventListener('click', hireHelper);
+        damageBtn.addEventListener('click', upgradeDamage);
+        defenseBtn.addEventListener('click', upgradeDefense);
+
+        // Game loop for helper attacks
+        setInterval(helperAttack, 3000);
+
+        // Initialize game
+        spawnNewEnemy();
+        updateUI();
+    </script>
+</body>
+</html>
